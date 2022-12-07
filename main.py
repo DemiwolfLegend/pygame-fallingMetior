@@ -1,10 +1,15 @@
 import pygame
 import random
+from pygame import mixer
+
+pygame.init()
 
 pygame.display.set_caption("firstGame")
 
 screen = pygame.display.set_mode((800, 800))
 backgroundImage = pygame.image.load("./content/background.png")
+back_music = mixer.music.load("./content/background.wav")
+mixer.music.play(-1)
 
 
 class character:
@@ -37,7 +42,7 @@ class boulder:
         self.y += self.change
         if self.y > 800:
             self.x = random.randint(0, 700)
-            self.y = -100
+            self.y = random.randint(-500, -100)
 
     def isColide(self, player):
         collison = self.y >= 600 and player.y > 0 and (
@@ -46,6 +51,9 @@ class boulder:
             player.y = -600
             print("Game Over", self.num)
             self.num += 1
+            return True
+        else:
+            return False
 
     def show(self):
         screen.blit(self.image, (self.x, self.y))
@@ -75,7 +83,8 @@ while run:
     player.move()
     for i in range(numFall):
         enemy[i].fall()
-        enemy[i].isColide(player)
+        if enemy[i].isColide(player):
+            break
         enemy[i].show()
 
     player.show()
