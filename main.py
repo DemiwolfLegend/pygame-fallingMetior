@@ -29,12 +29,15 @@ class Bullet:
         screen.blit(self.image, (self.x, self.y))
         # print(self.x, self.y)
 
+    def reset(self):
+        self.state = False
+        self.y = 700
+        self.x = 800
+
     def move(self):
         self.y -= self.change
         if self.y < -10:
-            self.state = False
-            self.y = 700
-            self.x = 800
+            self.reset()
 
 
 class character:
@@ -43,6 +46,7 @@ class character:
         self.x = 350
         self.y = 700
         self.change = 0
+        self.movement = 5
         self.bullet = Bullet()
 
     def show(self):
@@ -64,23 +68,32 @@ class boulder:
         self.image = pygame.image.load("./content/enemy.png")
         self.x = random.randint(0, 700)
         self.y = random.randint(-500, -100)
-        self.change = 5
+        self.change = 2
         self.num = 0
+
+    def reset(self):
+        self.x = random.randint(0, 700)
+        self.y = random.randint(-500, -100)
 
     def fall(self):
         self.y += self.change
         if self.y > 800:
-            self.x = random.randint(0, 700)
-            self.y = random.randint(-500, -100)
+            self.reset()
 
     def isColide(self, player):
-        collison = self.y >= 600 and player.y > 0 and (
+        collison1 = self.y >= 600 and player.y > 0 and (
             self.x > (player.x-100) and self.x < (player.x+100))
-        if collison:
+        bullet = player.bullet
+        collison2 = (bullet.y <= self.y+100) and (bullet.x >
+                                                  (self.x-100) and bullet.x < (self.x+100))
+        if collison1:
             player.y = -600
-            print("Game Over", self.num)
-            self.num += 1
+            print("Game Over")
             return True
+        elif collison2:
+            player.bullet.reset()
+            self.reset()
+
         else:
             return False
 
@@ -103,9 +116,9 @@ while run:
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                player.change = -10
+                player.change = -player.movement
             elif event.key == pygame.K_RIGHT:
-                player.change = 10
+                player.change = player.movement
             elif event.key == pygame.K_SPACE:
                 if not player.bullet.state:
                     player.bullet.aim(player)
