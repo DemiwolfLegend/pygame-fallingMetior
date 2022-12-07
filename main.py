@@ -1,4 +1,5 @@
 import pygame
+import random
 
 pygame.display.set_caption("firstGame")
 
@@ -16,7 +17,33 @@ class character:
     def show(self):
         screen.blit(self.image, (self.x, self.y))
 
+    def move(self):
+        self.x += self.change
+        if self.x < 0:
+            self.x = 0
+        elif self.x > 700:
+            self.x = 700
 
+
+class boulder:
+    def __init__(self) -> None:
+        self.image = pygame.image.load("./content/enemy.png")
+        self.x = random.randint(0, 700)
+        self.y = -100
+        self.change = 5
+        self.num = 10
+
+    def fall(self):
+        self.y += self.change
+        if self.y > 800:
+            self.x = random.randint(0, 700)
+            self.y = -100
+
+    def show(self):
+        screen.blit(self.image, (self.x, self.y))
+
+
+enemy = boulder()
 player = character()
 run = True
 while run:
@@ -25,5 +52,17 @@ while run:
         if event.type == pygame.QUIT:
             run = False
 
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                player.change = -10
+            elif event.key == pygame.K_RIGHT:
+                player.change = 10
+        elif event.type == pygame.KEYUP:
+            player.change = 0
+
+    player.move()
+    enemy.fall()
+
+    enemy.show()
     player.show()
     pygame.display.update()
