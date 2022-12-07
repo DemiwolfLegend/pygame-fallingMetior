@@ -31,12 +31,21 @@ class boulder:
         self.x = random.randint(0, 700)
         self.y = random.randint(-500, -100)
         self.change = 5
+        self.num = 0
 
     def fall(self):
         self.y += self.change
         if self.y > 800:
             self.x = random.randint(0, 700)
             self.y = -100
+
+    def isColide(self, player):
+        collison = self.y >= 600 and player.y > 0 and (
+            self.x > (player.x-100) and self.x < (player.x+100))
+        if collison:
+            player.y = -600
+            print("Game Over", self.num)
+            self.num += 1
 
     def show(self):
         screen.blit(self.image, (self.x, self.y))
@@ -66,6 +75,7 @@ while run:
     player.move()
     for i in range(numFall):
         enemy[i].fall()
+        enemy[i].isColide(player)
         enemy[i].show()
 
     player.show()
