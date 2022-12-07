@@ -29,9 +29,8 @@ class boulder:
     def __init__(self) -> None:
         self.image = pygame.image.load("./content/enemy.png")
         self.x = random.randint(0, 700)
-        self.y = -100
+        self.y = random.randint(-500, -100)
         self.change = 5
-        self.num = 10
 
     def fall(self):
         self.y += self.change
@@ -43,8 +42,12 @@ class boulder:
         screen.blit(self.image, (self.x, self.y))
 
 
-enemy = boulder()
 player = character()
+enemy = []
+numFall = 10
+for i in range(numFall):
+    enemy.append(boulder())
+
 run = True
 while run:
     screen.blit(backgroundImage, (0, 0))
@@ -61,8 +64,9 @@ while run:
             player.change = 0
 
     player.move()
-    enemy.fall()
+    for i in range(numFall):
+        enemy[i].fall()
+        enemy[i].show()
 
-    enemy.show()
     player.show()
     pygame.display.update()
