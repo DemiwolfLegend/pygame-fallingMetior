@@ -40,7 +40,7 @@ class Bullet:
             self.reset()
 
 
-class character:
+class Character:
     def __init__(self) -> None:
         self.image = pygame.image.load("./content/player.png")
         self.x = 350
@@ -63,7 +63,7 @@ class character:
             self.x = 700
 
 
-class boulder:
+class Boulder:
     def __init__(self) -> None:
         self.image = pygame.image.load("./content/enemy.png")
         self.x = random.randint(0, 700)
@@ -93,19 +93,18 @@ class boulder:
         elif collison2:
             player.bullet.reset()
             self.reset()
-
+            return True
         else:
             return False
 
     def show(self):
         screen.blit(self.image, (self.x, self.y))
 
-
-player = character()
+player = Character()
 enemy = []
 numFall = 10
 for i in range(numFall):
-    enemy.append(boulder())
+    enemy.append(Boulder())
 
 run = True
 while run:
