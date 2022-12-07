@@ -12,14 +12,43 @@ back_music = mixer.music.load("./content/background.wav")
 mixer.music.play(-1)
 
 
+class Bullet:
+    def __init__(self) -> None:
+        self.image = pygame.image.load("./content/bullet.png")
+        self.x = 800
+        self.y = 700
+        self.change = 10
+        self.state = False
+
+    def aim(self, other):
+        self.x = other.x
+        self.y = other.y
+        self.state = True
+
+    def show(self):
+        screen.blit(self.image, (self.x, self.y))
+        # print(self.x, self.y)
+
+    def move(self):
+        self.y -= self.change
+        if self.y < -10:
+            self.state = False
+            self.y = 700
+            self.x = 800
+
+
 class character:
     def __init__(self) -> None:
         self.image = pygame.image.load("./content/player.png")
         self.x = 350
         self.y = 700
         self.change = 0
+        self.bullet = Bullet()
 
     def show(self):
+        if self.bullet.state:
+            self.bullet.move()
+            self.bullet.show()
         screen.blit(self.image, (self.x, self.y))
 
     def move(self):
@@ -77,6 +106,9 @@ while run:
                 player.change = -10
             elif event.key == pygame.K_RIGHT:
                 player.change = 10
+            elif event.key == pygame.K_SPACE:
+                if not player.bullet.state:
+                    player.bullet.aim(player)
         elif event.type == pygame.KEYUP:
             player.change = 0
 
