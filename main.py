@@ -8,8 +8,8 @@ pygame.display.set_caption("firstGame")
 
 screen = pygame.display.set_mode((800, 800))
 backgroundImage = pygame.image.load("./content/background.png")
-back_music = mixer.music.load("./content/background.wav")
-mixer.music.play(-1)
+# back_music = mixer.music.load("./content/background.wav")
+# mixer.music.play(-1)
 
 
 class Score:
@@ -18,13 +18,15 @@ class Score:
         self.current = 0
         self.x = 10
         self.y = 10
+        self.addon = True
         file = open("./content/score", 'r')
         self.high = file.read()
         file.close()
 
     def plus(self):
-        self.current += 1
-        self.check()
+        if self.addon:
+            self.current += 1
+            self.check()
 
     def check(self):
         if int(self.high) < self.current:
@@ -110,7 +112,7 @@ class Boulder:
         if self.y > 800:
             self.reset()
 
-    def isColide(self, player):
+    def isColide(self):
         collison1 = self.y >= 600 and player.y > 0 and (
             self.x > (player.x-100) and self.x < (player.x+100))
         bullet = player.bullet
@@ -118,7 +120,7 @@ class Boulder:
                                                   (self.x-100) and bullet.x < (self.x+100))
         if collison1:
             player.y = -600
-            print("Game Over")
+            score.addon = False
             return True
         elif collison2:
             player.bullet.reset()
@@ -161,7 +163,7 @@ while run:
     player.move()
     for i in range(numFall):
         enemy[i].fall()
-        if enemy[i].isColide(player):
+        if enemy[i].isColide():
             break
         enemy[i].show()
 
