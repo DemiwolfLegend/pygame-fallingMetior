@@ -12,6 +12,36 @@ back_music = mixer.music.load("./content/background.wav")
 mixer.music.play(-1)
 
 
+class Score:
+    def __init__(self) -> None:
+        self.font = pygame.font.Font("./content/Free_font.ttf", 32)
+        self.current = 0
+        self.x = 10
+        self.y = 10
+        file = open("./content/score", 'r')
+        self.high = file.read()
+        file.close()
+
+    def plus(self):
+        self.current += 1
+        self.check()
+
+    def check(self):
+        if int(self.high) < self.current:
+            self.high = str(self.current)
+
+    def save(self):
+        file = open("./content/score", 'w')
+        file.write(self.high)
+        file.close()
+
+    def show(self):
+        a = self.font.render("Score :" + str(self.current), True, (255, 0, 0))
+        b = self.font.render("High Score :" + self.high, True, (255, 0, 0))
+        screen.blit(a, (self.x, self.y))
+        screen.blit(b, (self.x, self.y+40))
+
+
 class Bullet:
     def __init__(self) -> None:
         self.image = pygame.image.load("./content/bullet.png")
@@ -92,6 +122,7 @@ class Boulder:
             return True
         elif collison2:
             player.bullet.reset()
+            score.plus()
             self.reset()
             return True
         else:
@@ -100,7 +131,9 @@ class Boulder:
     def show(self):
         screen.blit(self.image, (self.x, self.y))
 
+
 player = Character()
+score = Score()
 enemy = []
 numFall = 10
 for i in range(numFall):
@@ -111,6 +144,7 @@ while run:
     screen.blit(backgroundImage, (0, 0))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            score.save()
             run = False
 
         if event.type == pygame.KEYDOWN:
@@ -132,4 +166,5 @@ while run:
         enemy[i].show()
 
     player.show()
+    score.show()
     pygame.display.update()
