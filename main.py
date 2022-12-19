@@ -18,6 +18,7 @@ class Score:
         self.current = 0
         self.x = 10
         self.y = 10
+        # self.addon = False
         self.addon = True
         file = open("./content/score", 'r')
         self.high = file.read()
@@ -43,6 +44,10 @@ class Score:
         screen.blit(a, (self.x, self.y))
         screen.blit(b, (self.x, self.y+40))
 
+    def over(self):
+        a = self.font.render("Game Over", True, (255, 0, 0))
+        screen.blit(a, (310, 400))
+
 
 class Bullet:
     def __init__(self) -> None:
@@ -52,9 +57,9 @@ class Bullet:
         self.change = 10
         self.state = False
 
-    def aim(self, other):
-        self.x = other.x
-        self.y = other.y
+    def aim(self):
+        self.x = player.x
+        self.y = player.y
         self.state = True
 
     def show(self):
@@ -156,7 +161,7 @@ while run:
                 player.change = player.movement
             elif event.key == pygame.K_SPACE:
                 if not player.bullet.state:
-                    player.bullet.aim(player)
+                    player.bullet.aim()
         elif event.type == pygame.KEYUP:
             player.change = 0
 
@@ -169,4 +174,6 @@ while run:
 
     player.show()
     score.show()
+    if not score.addon:
+        score.over()
     pygame.display.update()
