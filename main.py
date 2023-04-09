@@ -122,7 +122,7 @@ class Boulder:
             self.x > (player.x-100) and self.x < (player.x+100))
         bullet = player.bullet
         collison2 = (bullet.y <= self.y+100) and (bullet.x >
-                                                  (self.x-100) and bullet.x < (self.x+100))
+                                                  (self.x-10) and bullet.x < (self.x+110))
         if collison1:
             player.y = -600
             score.addon = False
